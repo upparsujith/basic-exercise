@@ -1,5 +1,6 @@
-name: Deployment Excersise 2
+name: Deployment Exercise 2
 on: push 
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -8,27 +9,29 @@ jobs:
         uses: actions/checkout@v3
       - name: Install dependencies
         run: npm ci
-      - name: Lint
-        run: npm run test
+      - name: Run Lint
+        run: npm run lint
+
   test:
+    needs: lint  # 🌟 Forces 'test' to wait until 'lint' passes successfully
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v3
       - name: Install dependencies
         run: npm ci
-        run: npm run test
       - name: Test code
-      
+        run: npm run test
+
   deploy:
+    needs: test  # 🌟 Forces 'deploy' to wait until 'test' passes successfully
     runs-on: ubuntu-latest
     steps:
       - name: Get code
         uses: actions/checkout@v3
       - name: Install dependencies
         run: npm ci
-      - name: Build code  
+      - name: Build code   
         run: npm run build
       - name: Deploy code
         run: echo "Deployment done....."
-
